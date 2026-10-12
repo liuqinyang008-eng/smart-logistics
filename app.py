@@ -20,22 +20,22 @@ if page == "城市物流驾驶舱":
     st.header("📊 城市物流态势感知")
     st.write("基于LaDe真实订单数据，展示重庆主城区物流运行状态与配送路线。")
 
-    if os.path.exists('data/processed/routes_map.html'):
-        with open('data/processed/routes_map.html', 'r', encoding='utf-8') as f:
+    if os.path.exists('routes_map.html'):
+        with open('routes_map.html', 'r', encoding='utf-8') as f:
             st.components.v1.html(f.read(), height=600)
     else:
         st.warning("请先运行 08_visualize_routes.py 生成地图。")
 
     col1, col2 = st.columns(2)
     with col1:
-        if os.path.exists('data/processed/order_spatial.png'):
-            st.image('data/processed/order_spatial.png', caption='重庆全市订单空间分布', width=500)
+        if os.path.exists('order_spatial.png'):
+            st.image('order_spatial.png', caption='重庆全市订单空间分布', width=500)
     with col2:
-        if os.path.exists('data/processed/order_spatial_maincity.png'):
-            st.image('data/processed/order_spatial_maincity.png', caption='主城区订单分布', width=500)
+        if os.path.exists('order_spatial_maincity.png'):
+            st.image('order_spatial_maincity.png', caption='主城区订单分布', width=500)
 
-    if os.path.exists('data/processed/order_hourly.png'):
-        st.image('data/processed/order_hourly.png', caption='订单小时分布（早晚双高峰）', width=900)
+    if os.path.exists('order_hourly.png'):
+        st.image('order_hourly.png', caption='订单小时分布（早晚双高峰）', width=900)
 
 
 # ==================== 2. AI需求预测 ====================
@@ -45,18 +45,18 @@ elif page == "AI需求预测":
 
     col1, col2 = st.columns(2)
     with col1:
-        if os.path.exists('data/processed/ai_prediction_result.png'):
-            st.image('data/processed/ai_prediction_result.png', caption='AI预测订单量 vs 真实订单量', width=500)
+        if os.path.exists('ai_prediction_result.png'):
+            st.image('ai_prediction_result.png', caption='AI预测订单量 vs 真实订单量', width=500)
     with col2:
-        if os.path.exists('data/processed/ai_feature_importance.png'):
-            st.image('data/processed/ai_feature_importance.png', caption='特征重要性分析', width=500)
+        if os.path.exists('ai_feature_importance.png'):
+            st.image('ai_feature_importance.png', caption='特征重要性分析', width=500)
 
-    if os.path.exists('data/processed/ai_model_metrics.txt'):
-        with open('data/processed/ai_model_metrics.txt', 'r', encoding='utf-8') as f:
+    if os.path.exists('ai_model_metrics.txt'):
+        with open('ai_model_metrics.txt', 'r', encoding='utf-8') as f:
             st.text(f.read())
 
-    if os.path.exists('data/processed/fig1_future_orders.png'):
-        st.image('data/processed/fig1_future_orders.png', caption='未来年订单量预测（2026-2030）', width=700)
+    if os.path.exists('fig1_future_orders.png'):
+        st.image('fig1_future_orders.png', caption='未来年订单量预测（2026-2030）', width=700)
 
 
 # ==================== 3. 智能配送优化 ====================
@@ -84,7 +84,7 @@ elif page == "智能配送优化":
                 from ortools.constraint_solver import pywrapcp
 
                 # 读取订单
-                orders = pd.read_csv('data/processed/orders.csv')
+                orders = pd.read_csv('orders.csv')
                 orders['create_time'] = pd.to_datetime(orders['create_time'])
                 main_city = orders[
                     (orders['longitude'] >= 106.3) & (orders['longitude'] <= 106.8) &
@@ -213,8 +213,8 @@ elif page == "智能配送优化":
     else:
         st.info("👆 拖动滑块调整权重后，点击上方按钮重新求解。默认显示上次运行 07_optimize_vrp.py 生成的方案。")
 
-        if os.path.exists('data/processed/routes.csv'):
-            df = pd.read_csv('data/processed/routes.csv')
+        if os.path.exists('routes.csv'):
+            df = pd.read_csv('routes.csv')
             st.subheader("当前配送路线方案表")
             st.dataframe(df.head(50))
             c1, c2, c3 = st.columns(3)
@@ -230,8 +230,8 @@ elif page == "低碳评价分析":
     smart_distance = 0.0
     smart_cost = 0.0
     smart_carbon = 0.0
-    if os.path.exists('data/processed/vrp_summary.txt'):
-        with open('data/processed/vrp_summary.txt', 'r', encoding='utf-8') as f:
+    if os.path.exists('vrp_summary.txt'):
+        with open('vrp_summary.txt', 'r', encoding='utf-8') as f:
             content = f.read()
         d_match = re.search(r'总行驶距离:\s*([\d.]+)', content)
         c_match = re.search(r'总运输成本:\s*([\d.]+)', content)
@@ -265,12 +265,12 @@ elif page == "低碳评价分析":
                   delta=f"-{saved_carbon:.2f} kg")
         st.metric("人工调度总距离", f"{manual_distance:.2f} km")
 
-    if os.path.exists('data/processed/optimization_comparison.png'):
-        st.image('data/processed/optimization_comparison.png',
+    if os.path.exists('optimization_comparison.png'):
+        st.image('optimization_comparison.png',
                  caption='优化前后对比', width=1000)
 
-    if os.path.exists('data/processed/strategy_comparison.png'):
-        st.image('data/processed/strategy_comparison.png',
+    if os.path.exists('strategy_comparison.png'):
+        st.image('strategy_comparison.png',
                  caption='不同优化策略对比', width=1000)
 
     st.success(f"✅ 智能低碳调度相比人工调度：节省约 {saved_cost:,.0f} 元成本，减少约 {saved_carbon:.1f} kg 碳排放。")
@@ -283,17 +283,17 @@ elif page == "未来趋势预测":
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        if os.path.exists('data/processed/fig1_future_orders.png'):
-            st.image('data/processed/fig1_future_orders.png', caption='未来年订单量预测', width=350)
+        if os.path.exists('fig1_future_orders.png'):
+            st.image('fig1_future_orders.png', caption='未来年订单量预测', width=350)
     with col2:
-        if os.path.exists('data/processed/fig2_future_cost.png'):
-            st.image('data/processed/fig2_future_cost.png', caption='未来运输成本对比', width=350)
+        if os.path.exists('fig2_future_cost.png'):
+            st.image('fig2_future_cost.png', caption='未来运输成本对比', width=350)
     with col3:
-        if os.path.exists('data/processed/fig3_future_carbon.png'):
-            st.image('data/processed/fig3_future_carbon.png', caption='未来碳排放对比', width=350)
+        if os.path.exists('fig3_future_carbon.png'):
+            st.image('fig3_future_carbon.png', caption='未来碳排放对比', width=350)
 
-    if os.path.exists('data/processed/future_forecast.png'):
-        st.image('data/processed/future_forecast.png',
+    if os.path.exists('future_forecast.png'):
+        st.image('future_forecast.png',
                  caption='重庆物流需求趋势预测（2020-2030）', width=1000)
 
     st.markdown("---")
